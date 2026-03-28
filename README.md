@@ -1,6 +1,6 @@
 # Weather Classification (Streamlit + TensorFlow)
 
-A simple **image classification** web app built with **Streamlit** and **TensorFlow** that predicts the weather category in an uploaded image.
+A simple **image classification** web app built with **Streamlit** and **TensorFlow** that predicts the weather category in an uploaded image. This AI model was trained using Teachable Machine.
 
 **Classes**
 - Rainy
