@@ -6,7 +6,7 @@ import numpy as np
 # --- PAGE SETUP ---
 st.set_page_config(page_title="Weather AI", layout="centered")
 st.title("Weather Classification App")
-st.write("Upload a photo and the AI will tell you if it's Cloudy, Rainy, or a Thunderstorm.")
+st.write("This application will predict if a a subject falls under one of the three weathers: \nRainy, Cloudy, or Thunderstorm")
 
 class DepthwiseConv2DCompat(tf.keras.layers.DepthwiseConv2D):
     @classmethod
@@ -17,7 +17,12 @@ class DepthwiseConv2DCompat(tf.keras.layers.DepthwiseConv2D):
 # --- LOAD YOUR MODEL ---
 @st.cache_resource  # This stops the app from reloading the heavy model every time you click
 def load_my_ai():
-    model = tf.keras.models.load_model("keras_Model.h5", compile=False)
+    # Pass the compat class to the loader
+    model = tf.keras.models.load_model(
+        "keras_Model.h5", 
+        compile=False, 
+        custom_objects={"DepthwiseConv2D": DepthwiseConv2DCompat}
+    )
     class_names = [line.strip() for line in open("labels.txt", "r").readlines()]
     return model, class_names
 
@@ -47,6 +52,19 @@ if uploaded_file is not None:
         class_name = class_names[index]
         confidence_score = prediction[0][index]
 
-    # 4. Display Results
-    st.success(f"Prediction: **{class_name[2:]}**")
-    st.metric(label="Confidence Score", value=f"{round(confidence_score * 100, 2)}%")
+# 4. Display Results
+    st.divider()
+    st.subheader("Analysis Results")
+    
+    st.success(f"Top Prediction: **{class_name[2:]}** ({round(confidence_score * 100, 2)}%)")
+
+    st.write("### Probability Breakdown:")
+    
+    for i in range(len(class_names)):
+        score = prediction[0][i]
+        name = class_names[i][2:] 
+    
+        # Display name and percentage
+        st.write(f"**{name}**: {round(score * 100, 2)}%")
+        # Visual progress bar (0.0 to 1.0)
+        st.progress(float(score))
