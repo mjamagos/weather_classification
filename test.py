@@ -3,7 +3,7 @@ import streamlit as st
 from PIL import Image, ImageOps
 import numpy as np
 
-# --- PAGE SETUP ---
+# Page setup
 st.set_page_config(page_title="Weather AI", layout="centered")
 st.title("Weather Classification App")
 st.write("This application will predict if a a subject falls under one of the three weathers: \nRainy, Cloudy, or Thunderstorm")
@@ -14,17 +14,17 @@ class DepthwiseConv2DCompat(tf.keras.layers.DepthwiseConv2D):
         config.pop("groups", None)  # ignore legacy arg
         return super().from_config(config)
     
-# --- LOAD YOUR MODEL ---
-@st.cache_resource  # This stops the app from reloading the heavy model every time you click
+# Model loader
+@st.cache_resource 
 def load_my_ai():
-    # Pass the compat class to the loader
+    # Pass compat class to the loader
     model = tf.keras.models.load_model("keras_model.h5", compile=False)
     class_names = [line.strip() for line in open("labels.txt", "r").readlines()]
     return model, class_names
 
 model, class_names = load_my_ai()
 
-# --- THE UPLOADER (No more hardcoding!) ---
+# Uploader
 uploaded_file = st.file_uploader("Choose a weather image...", type=["jpg", "png", "jpeg"])
 
 if uploaded_file is not None:
@@ -32,7 +32,7 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Your Uploaded Image", use_container_width=True)
     
-    # 2. Process the image (The Teachable Machine Logic)
+    # 2. Process the image 
     size = (224, 224)
     image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
     image_array = np.asarray(image)
@@ -48,7 +48,7 @@ if uploaded_file is not None:
         class_name = class_names[index]
         confidence_score = prediction[0][index]
 
-# 4. Display Results
+    # 4. Display Results
     st.divider()
     st.subheader("Analysis Results")
     
