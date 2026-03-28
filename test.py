@@ -18,11 +18,7 @@ class DepthwiseConv2DCompat(tf.keras.layers.DepthwiseConv2D):
 @st.cache_resource  # This stops the app from reloading the heavy model every time you click
 def load_my_ai():
     # Pass the compat class to the loader
-    model = tf.keras.models.load_model(
-        "keras_Model.h5", 
-        compile=False, 
-        custom_objects={"DepthwiseConv2D": DepthwiseConv2DCompat}
-    )
+    model = tf.keras.models.load_model("keras_model.h5", compile=False)
     class_names = [line.strip() for line in open("labels.txt", "r").readlines()]
     return model, class_names
 
