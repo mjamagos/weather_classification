@@ -1,4 +1,4 @@
-python-3.10
+python-3.11
 streamlit
 tensorflow-cpu==2.15.0
 Pillow
